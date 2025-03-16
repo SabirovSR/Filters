@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp1
@@ -18,23 +13,35 @@ namespace WindowsFormsApp1
             InitializeComponent();
         }
 
-        Bitmap[] historyImages = new Bitmap[sizeHistoryImage]; 
+        Bitmap[] historyImages = new Bitmap[sizeHistoryImage];
 
         static int sizeHistoryImage = 5;
         static int currentIndexHistoryImage = -1;
 
         protected void newHistoryImage(Bitmap newImage)
         {
+            if (currentIndexHistoryImage + 1 >= 5)
+            {
+                for (int i = 0; i < historyImages.Length - 1; i++)
+                {
+                    historyImages[i] = historyImages[i + 1];
+                }
+
+                historyImages[historyImages.Length - 1] = newImage;
+                return;
+            }
+
             currentIndexHistoryImage++;
             historyImages[currentIndexHistoryImage] = newImage;
-        } 
+        }
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "Image files|*.png;*.jpg;*.bmp|All files)*.*|*.*";
 
-            if (dialog.ShowDialog() == DialogResult.OK) {
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
                 image = new Bitmap(dialog.FileName);
             }
             pictureBox1.Image = image;
@@ -371,18 +378,18 @@ namespace WindowsFormsApp1
         {
             try
             {
-                if (currentIndexHistoryImage >= 0)
-                {
-                    pictureBox1.Image = historyImages[--currentIndexHistoryImage] ?? throw new Exception("Вы на исходном изображении");
+                if (currentIndexHistoryImage - 1 < 0) throw new Exception("Вы в начале истории изображений");
 
-                    image = historyImages[currentIndexHistoryImage];
+                pictureBox1.Image = historyImages[currentIndexHistoryImage - 1];
+                currentIndexHistoryImage--;
 
-                    pictureBox1.Refresh();
-                }
+                image = historyImages[currentIndexHistoryImage];
+
+                pictureBox1.Refresh();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message); 
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -390,14 +397,13 @@ namespace WindowsFormsApp1
         {
             try
             {
-                if (currentIndexHistoryImage < historyImages.Length - 1)
-                {
-                    pictureBox1.Image = historyImages[++currentIndexHistoryImage] ?? throw new Exception("Вы на последнем изображении");
+                if (currentIndexHistoryImage >= historyImages.Length - 1) throw new Exception("Вы на последнем изображении");
+                pictureBox1.Image = historyImages[currentIndexHistoryImage + 1];
+                currentIndexHistoryImage++;
 
-                    image = historyImages[currentIndexHistoryImage];
+                image = historyImages[currentIndexHistoryImage];
 
-                    pictureBox1.Refresh();
-                }
+                pictureBox1.Refresh();
             }
             catch (Exception ex)
             {

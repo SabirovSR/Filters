@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WindowsFormsApp1
 {
@@ -533,10 +531,4 @@ namespace WindowsFormsApp1
             return Color.FromArgb(AllR[AllR.Count() / 2], AllG[AllG.Count() / 2], AllB[AllB.Count() / 2]);
         }
     }
-
-
-
-
-
 }
-
