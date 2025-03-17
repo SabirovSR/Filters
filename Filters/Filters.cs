@@ -46,6 +46,209 @@ namespace WindowsFormsApp1
         }
     }
 
+    class SharpenBlurVignetteFilter2 : Filters
+    {
+        private double sharpnessStrength; // Сила резкости в центре
+        private double blurStrength;      // Сила размытия на краях
+
+        public SharpenBlurVignetteFilter2(double sharpnessStrength = 1.5, double blurStrength = 2.0)
+        {
+            this.sharpnessStrength = sharpnessStrength;
+            this.blurStrength = blurStrength;
+        }
+
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            // Центр изображения
+            int centerX = sourceImage.Width / 2;
+            int centerY = sourceImage.Height / 2;
+
+            // Максимальное расстояние от центра до угла
+            double maxDistance = Math.Sqrt(centerX * centerX + centerY * centerY);
+
+            // Расстояние от текущего пикселя до центра
+            double distance = Math.Sqrt((x - centerX) * (x - centerX) + (y - centerY) * (y - centerY));
+
+            // Коэффициент для смешивания резкости и размытия (0.0 - 1.0)
+            double factor = 1.0 - (distance / maxDistance);
+
+            // Применяем резкость или размытие в зависимости от расстояния
+            Color resultColor;
+            if (factor > 0.5)
+            {
+                // Ближе к центру — увеличиваем резкость
+                resultColor = ApplySharpen(sourceImage, x, y, sharpnessStrength * factor);
+            }
+            else
+            {
+                // Дальше от центра — добавляем размытие
+                resultColor = ApplyBlur(sourceImage, x, y, blurStrength * (1 - factor));
+            }
+
+            return resultColor;
+        }
+
+        // Метод для увеличения резкости
+        private Color ApplySharpen(Bitmap sourceImage, int x, int y, double strength)
+        {
+            // Ядро резкости (лапласиан)
+            double[,] kernel = {
+            { -1, -1, -1 },
+            { -1,  9, -1 },
+            { -1, -1, -1 }
+        };
+
+            return ApplyKernel(sourceImage, x, y, kernel, strength);
+        }
+
+        // Метод для размытия
+        private Color ApplyBlur(Bitmap sourceImage, int x, int y, double strength)
+        {
+            // Ядро размытия (гауссово размытие)
+            double[,] kernel = {
+            { 1, 2, 1 },
+            { 2, 4, 2 },
+            { 1, 2, 1 }
+        };
+
+            return ApplyKernel(sourceImage, x, y, kernel, strength);
+        }
+
+        // Общий метод для применения ядра (фильтра)
+        private Color ApplyKernel(Bitmap sourceImage, int x, int y, double[,] kernel, double strength)
+        {
+            int kernelSize = kernel.GetLength(0);
+            int radius = kernelSize / 2;
+
+            double resultR = 0, resultG = 0, resultB = 0;
+
+            // Применяем ядро к пикселю и его соседям
+            for (int i = -radius; i <= radius; i++)
+            {
+                for (int j = -radius; j <= radius; j++)
+                {
+                    int neighborX = Clamp(x + j, 0, sourceImage.Width - 1);
+                    int neighborY = Clamp(y + i, 0, sourceImage.Height - 1);
+
+                    Color neighborColor = sourceImage.GetPixel(neighborX, neighborY);
+
+                    double kernelValue = kernel[i + radius, j + radius];
+                    resultR += neighborColor.R * kernelValue;
+                    resultG += neighborColor.G * kernelValue;
+                    resultB += neighborColor.B * kernelValue;
+                }
+            }
+
+            // Нормализуем результат и применяем силу
+            int newR = Clamp((int)(resultR / 16 * strength), 0, 255);
+            int newG = Clamp((int)(resultG / 16 * strength), 0, 255);
+            int newB = Clamp((int)(resultB / 16 * strength), 0, 255);
+
+            return Color.FromArgb(newR, newG, newB);
+        }
+
+        // Метод для ограничения значения в диапазоне
+        private int Clamp(int value, int min, int max)
+        {
+            return Math.Min(Math.Max(value, min), max);
+        }
+    }
+
+
+    class SharpenBlurVignetteFilter : Filters
+    {
+        private SharpnessFilter sharpnessFilter;
+        private BlurFilter blurFilter;
+
+        public SharpenBlurVignetteFilter()
+        {
+            sharpnessFilter = new SharpnessFilter();
+            blurFilter = new BlurFilter();
+        }
+
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            // Центр изображения
+            int centerX = sourceImage.Width / 2;
+            int centerY = sourceImage.Height / 2;
+
+            // Максимальное расстояние от центра до угла
+            double maxDistance = Math.Sqrt(centerX * centerX + centerY * centerY);
+
+            // Расстояние от текущего пикселя до центра
+            double distance = Math.Sqrt((x - centerX) * (x - centerX) + (y - centerY) * (y - centerY));
+
+            // Коэффициент для смешивания резкости и размытия (0.0 - 1.0)
+            double koeff = 1.0 - distance / maxDistance;
+
+            // Применяем резкость или размытие в зависимости от расстояния
+            Color resultColor;
+            if (koeff > 0.5)
+            {
+                // Ближе к центру — увеличиваем резкость
+                resultColor = sharpnessFilter.CalculateNewPixelColor(sourceImage, x, y);
+            }
+            else
+            {
+                // Дальше от центра — добавляем размытие
+                resultColor = blurFilter.CalculateNewPixelColor(sourceImage, x, y);
+            }
+
+            return resultColor;
+        }
+    }
+
+    // Сделать фильтр виньетка с плавной границей 
+    class VignetteFilter : Filters
+    {
+        private bool darken; // Флаг для определения, затемнять или осветлять края
+
+        public VignetteFilter(bool darken = true)
+        {
+            this.darken = darken;
+        }
+
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            Color sourceColor = sourceImage.GetPixel(x, y);
+
+            // Центр изображения
+            int centerX = sourceImage.Width / 2;
+            int centerY = sourceImage.Height / 2;
+
+            // Максимальное расстояние от центра до угла
+            double maxDistance = Math.Sqrt(centerX * centerX + centerY * centerY);
+
+            // Расстояние от текущего пикселя до центра
+            double distance = Math.Sqrt((x - centerX) * (x - centerX) + (y - centerY) * (y - centerY));
+
+            // Коэффициент затемнения/осветления (0.0 - 1.0)
+            double factor = 1.0 - distance / maxDistance;
+
+            int newR, newG, newB;
+            // Затемнение
+            if (darken)
+            {
+                newR = (int)(sourceColor.R * factor);
+                newG = (int)(sourceColor.G * factor);
+                newB = (int)(sourceColor.B * factor);
+            }
+            // Осветление
+            else
+            {
+                newR = (int)(sourceColor.R + (255 - sourceColor.R) * (1 - factor));
+                newG = (int)(sourceColor.G + (255 - sourceColor.G) * (1 - factor));
+                newB = (int)(sourceColor.B + (255 - sourceColor.B) * (1 - factor));
+            }
+
+            newR = Clamp(newR, 0, 255);
+            newG = Clamp(newG, 0, 255);
+            newB = Clamp(newB, 0, 255);
+
+            return Color.FromArgb(sourceColor.A, newR, newG, newB);
+        }
+    }
+
     class InvertFilter : Filters // инверсия
     {
         public InvertFilter() { }
@@ -280,9 +483,14 @@ namespace WindowsFormsApp1
             {
                 for (int j = 0; j < sizeY; j++)
                 {
-                    kernel[i, j] = 1.0f / (float)(sizeX * sizeY);
+                    kernel[i, j] = 1.0f / (sizeX * sizeY);
                 }
             }
+        }
+
+        public Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            return base.calculateNewPixelColor(sourceImage, x, y);
         }
     }
 
@@ -453,6 +661,11 @@ namespace WindowsFormsApp1
         {
             kernel = new float[3, 3]
                 { {-1, -1, -1 }, {-1, 9, -1 }, {-1, -1, -1 } };
+        }
+
+        public Color CalculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            return base.calculateNewPixelColor(sourceImage, x, y);
         }
     }
 

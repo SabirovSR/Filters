@@ -362,6 +362,30 @@ namespace WindowsFormsApp1
             }
         }
 
+        private void темнаяToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filters filter = new VignetteFilter();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
+
+        private void светлаяToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filters filter = new VignetteFilter(false);
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
+
+        private void глазОкаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filters filter = new SharpenBlurVignetteFilter();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
+
+        private void глазОка2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filters filter = new SharpenBlurVignetteFilter2();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
+
         private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog SaveDialog = new SaveFileDialog();

@@ -78,6 +78,11 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.button1 = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.виньеткаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.темнаяToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.светлаяToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.глазОкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.глазОка2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -85,7 +90,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Location = new System.Drawing.Point(55, 81);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(1631, 732);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -145,7 +150,10 @@
             this.геометрическиеToolStripMenuItem,
             this.медианныеToolStripMenuItem,
             this.морфологическиеToolStripMenuItem,
-            this.другиеToolStripMenuItem});
+            this.другиеToolStripMenuItem,
+            this.виньеткаToolStripMenuItem,
+            this.глазОкаToolStripMenuItem,
+            this.глазОка2ToolStripMenuItem});
             this.фильтрыToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.фильтрыToolStripMenuItem.Name = "фильтрыToolStripMenuItem";
             this.фильтрыToolStripMenuItem.Size = new System.Drawing.Size(139, 36);
@@ -462,7 +470,7 @@
             this.button1.BackColor = System.Drawing.SystemColors.MenuBar;
             this.button1.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button1.Location = new System.Drawing.Point(1512, 864);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(173, 57);
             this.button1.TabIndex = 5;
@@ -474,10 +482,47 @@
             // 
             this.progressBar1.ForeColor = System.Drawing.SystemColors.MenuHighlight;
             this.progressBar1.Location = new System.Drawing.Point(55, 864);
-            this.progressBar1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(4);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(1429, 57);
             this.progressBar1.TabIndex = 6;
+            // 
+            // виньеткаToolStripMenuItem
+            // 
+            this.виньеткаToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.темнаяToolStripMenuItem,
+            this.светлаяToolStripMenuItem});
+            this.виньеткаToolStripMenuItem.Name = "виньеткаToolStripMenuItem";
+            this.виньеткаToolStripMenuItem.Size = new System.Drawing.Size(354, 40);
+            this.виньеткаToolStripMenuItem.Text = "Виньетка";
+            // 
+            // темнаяToolStripMenuItem
+            // 
+            this.темнаяToolStripMenuItem.Name = "темнаяToolStripMenuItem";
+            this.темнаяToolStripMenuItem.Size = new System.Drawing.Size(315, 40);
+            this.темнаяToolStripMenuItem.Text = "Темная";
+            this.темнаяToolStripMenuItem.Click += new System.EventHandler(this.темнаяToolStripMenuItem_Click);
+            // 
+            // светлаяToolStripMenuItem
+            // 
+            this.светлаяToolStripMenuItem.Name = "светлаяToolStripMenuItem";
+            this.светлаяToolStripMenuItem.Size = new System.Drawing.Size(315, 40);
+            this.светлаяToolStripMenuItem.Text = "Светлая";
+            this.светлаяToolStripMenuItem.Click += new System.EventHandler(this.светлаяToolStripMenuItem_Click);
+            // 
+            // глазОкаToolStripMenuItem
+            // 
+            this.глазОкаToolStripMenuItem.Name = "глазОкаToolStripMenuItem";
+            this.глазОкаToolStripMenuItem.Size = new System.Drawing.Size(354, 40);
+            this.глазОкаToolStripMenuItem.Text = "Глаз ока";
+            this.глазОкаToolStripMenuItem.Click += new System.EventHandler(this.глазОкаToolStripMenuItem_Click);
+            // 
+            // глазОка2ToolStripMenuItem
+            // 
+            this.глазОка2ToolStripMenuItem.Name = "глазОка2ToolStripMenuItem";
+            this.глазОка2ToolStripMenuItem.Size = new System.Drawing.Size(354, 40);
+            this.глазОка2ToolStripMenuItem.Text = "Глаз ока 2";
+            this.глазОка2ToolStripMenuItem.Click += new System.EventHandler(this.глазОка2ToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -490,7 +535,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.pictureBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Фоторедактор";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -551,6 +596,11 @@
         private System.Windows.Forms.ToolStripMenuItem правкаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem назадToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem впередToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem виньеткаToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem темнаяToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem светлаяToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem глазОкаToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem глазОка2ToolStripMenuItem;
     }
 }
 
